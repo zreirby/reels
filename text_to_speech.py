@@ -15,7 +15,6 @@ STYLE_SETTINGS = {
 }
 
 def generate_tts(text: str, style: str = "Default") -> str:
-    # Your text-to-speech code here
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
 
     settings = STYLE_SETTINGS.get(style, STYLE_SETTINGS["Default"])
@@ -29,8 +28,8 @@ def generate_tts(text: str, style: str = "Default") -> str:
         "text": text,
         "model_id": "eleven_turbo_v2",
         "voice_settings": {
-            "stability": 0.7,
-            "similarity_boost": 0.75
+            "stability": settings["stability"],
+            "similarity_boost": settings["similarity_boost"]
         }
     }
 
@@ -42,4 +41,7 @@ def generate_tts(text: str, style: str = "Default") -> str:
             f.write(response.content)
         return audio_path
     else:
+        print("TTS API error:")
+        print("Status code:", response.status_code)
+        print("Response text:", response.text)
         raise Exception(f"Error {response.status_code}: {response.text}")
